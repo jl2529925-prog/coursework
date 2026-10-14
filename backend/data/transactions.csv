@@ -1,0 +1,7 @@
+id,occurred_on,type,category,amount,note
+seed-expense-005,2026-08-05,expense,Food,42.80,Dinner
+seed-expense-004,2026-08-05,expense,Study,129.00,Reference books
+seed-expense-003,2026-08-04,expense,Transport,24.00,Metro card
+seed-expense-002,2026-08-03,expense,Food,86.50,Groceries
+seed-expense-001,2026-08-02,expense,Housing,1800.00,August rent
+seed-income-001,2026-08-01,income,Salary,6800.00,Monthly salary
