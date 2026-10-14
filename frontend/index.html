@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0e5e4c" />
+    <title>Ledgerleaf — Personal finance, in context</title>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <div class="app-shell">
+      <aside class="ledger-rail" aria-label="Primary navigation">
+        <a class="brand" href="#dashboard" data-view-link="dashboard" aria-label="Ledgerleaf dashboard">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>
+            <strong>Ledgerleaf</strong>
+            <small>Personal finance IS</small>
+          </span>
+        </a>
+
+        <nav class="primary-nav">
+          <button class="nav-link is-active" type="button" data-view="dashboard" aria-current="page">
+            <span class="nav-glyph">⌂</span><span>Overview</span>
+          </button>
+          <button class="nav-link" type="button" data-view="transactions">
+            <span class="nav-glyph">↕</span><span>Transactions</span>
+          </button>
+          <button class="nav-link" type="button" data-view="budgets">
+            <span class="nav-glyph">◔</span><span>Budgets</span>
+          </button>
+          <button class="nav-link" type="button" data-view="reports">
+            <span class="nav-glyph">⌁</span><span>Reports</span>
+          </button>
+        </nav>
+
+        <div class="rail-foot">
+          <div class="connection" id="connection-status" data-state="checking">
+            <span class="connection-dot" aria-hidden="true"></span>
+            <span>Checking API</span>
+          </div>
+          <button class="text-button" type="button" id="open-settings">API settings</button>
+        </div>
+      </aside>
+
+      <main id="main-content" class="workspace" tabindex="-1">
+        <header class="workspace-head">
+          <div>
+            <p class="eyebrow" id="view-eyebrow">Current position</p>
+            <h1 id="view-title">Your August ledger</h1>
+          </div>
+          <div class="head-actions">
+            <label class="period-control">
+              <span>Period</span>
+              <input id="period-picker" type="month" min="2000-01" max="2100-12" />
+            </label>
+            <button class="button button-primary" type="button" id="quick-add">+ Record money</button>
+          </div>
+        </header>
+
+        <section class="view is-visible" id="view-dashboard" data-view-panel="dashboard" aria-labelledby="view-title">
+          <div class="dashboard-grid">
+            <article class="balance-ledger panel">
+              <div class="panel-kicker">Money left this month</div>
+              <div class="balance-line">
+                <span class="currency-mark" id="balance-currency">¥</span>
+                <strong id="balance-value">—</strong>
+              </div>
+              <p class="balance-note" id="balance-note">Waiting for the monthly report.</p>
+              <div class="cashflow-scale" aria-label="Income and expense comparison">
+                <div class="scale-row">
+                  <span>Income</span><strong id="income-value">—</strong>
+                  <div class="scale-track"><i id="income-bar"></i></div>
+                </div>
+                <div class="scale-row expense">
+                  <span>Expense</span><strong id="expense-value">—</strong>
+                  <div class="scale-track"><i id="expense-bar"></i></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="budget-pulse panel">
+              <div class="panel-heading">
+                <div>
+                  <div class="panel-kicker">Budget pulse</div>
+                  <h2>Spend pressure</h2>
+                </div>
+                <span class="status-chip" id="budget-health">No budget</span>
+              </div>
+              <div class="pulse-wrap">
+                <div class="pulse-ring" id="pulse-ring" style="--pulse: 0deg">
+                  <div><strong id="pulse-value">0%</strong><span>used</span></div>
+                </div>
+                <div class="pulse-copy">
+                  <strong id="pulse-headline">Set a monthly budget</strong>
+                  <p id="pulse-detail">A budget turns the ring into an early-warning signal.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="trail-panel panel">
+              <div class="panel-heading">
+                <div>
+                  <div class="panel-kicker">Ledger trail</div>
+                  <h2>Latest movements</h2>
+                </div>
+                <button class="text-button" type="button" data-view="transactions">See all</button>
+              </div>
+              <ol class="transaction-trail" id="latest-transactions">
+                <li class="empty-state">Transactions will appear here after the API connects.</li>
+              </ol>
+            </article>
+
+            <article class="category-panel panel">
+              <div class="panel-heading">
+                <div>
+                  <div class="panel-kicker">Expense shape</div>
+                  <h2>Where money went</h2>
+                </div>
+              </div>
+              <div class="category-bars" id="dashboard-categories">
+                <p class="empty-state">No expense data for this month.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="view-transactions" data-view-panel="transactions" aria-labelledby="view-title" hidden>
+          <div class="transaction-layout">
+            <article class="panel table-panel">
+              <div class="panel-heading filter-heading">
+                <div>
+                  <div class="panel-kicker">Every movement</div>
+                  <h2>Transaction register</h2>
+                </div>
+                <div class="filter-row">
+                  <label><span class="sr-only">Filter by type</span>
+                    <select id="transaction-type-filter">
+                      <option value="">All types</option>
+                      <option value="income">Income</option>
+                      <option value="expense">Expense</option>
+                    </select>
+                  </label>
+                  <label><span class="sr-only">Search transactions</span>
+                    <input id="transaction-search" type="search" placeholder="Search category or note" />
+                  </label>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr><th>Date</th><th>Direction</th><th>Category</th><th>Note</th><th class="number">Amount</th><th><span class="sr-only">Actions</span></th></tr>
+                  </thead>
+                  <tbody id="transaction-table-body"></tbody>
+                </table>
+              </div>
+              <p class="empty-state" id="transaction-empty" hidden>No transactions match these filters.</p>
+            </article>
+
+            <aside class="entry-slip panel" id="entry-slip" aria-labelledby="entry-title">
+              <div class="slip-tear" aria-hidden="true"></div>
+              <div class="panel-kicker">New ledger line</div>
+              <h2 id="entry-title">Record money</h2>
+              <p class="muted">Fields are checked in the browser before the API receives them.</p>
+              <form id="transaction-form" novalidate>
+                <div class="segmented" role="radiogroup" aria-label="Transaction type">
+                  <label><input type="radio" name="type" value="expense" checked /><span>Money out</span></label>
+                  <label><input type="radio" name="type" value="income" /><span>Money in</span></label>
+                </div>
+                <label class="field"><span>Date</span><input name="occurred_on" type="date" required /><small data-error-for="occurred_on"></small></label>
+                <label class="field"><span>Category</span><input name="category" list="category-options" maxlength="40" required placeholder="Food, Salary, Study…" /><small data-error-for="category"></small></label>
+                <datalist id="category-options"></datalist>
+                <label class="field"><span>Amount</span><span class="money-input"><i id="form-currency">¥</i><input name="amount" inputmode="decimal" required placeholder="0.00" /></span><small data-error-for="amount"></small></label>
+                <label class="field"><span>Note <em>optional</em></span><textarea name="note" rows="3" maxlength="160" placeholder="What was this for?"></textarea><small data-error-for="note"></small></label>
+                <div class="form-actions">
+                  <button class="button button-primary" type="submit">Save transaction</button>
+                  <button class="text-button" type="button" id="clear-draft">Clear</button>
+                </div>
+                <p class="form-status" id="transaction-form-status" role="status"></p>
+              </form>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="view-budgets" data-view-panel="budgets" aria-labelledby="view-title" hidden>
+          <div class="budget-layout">
+            <article class="panel budget-editor">
+              <div class="panel-heading">
+                <div><div class="panel-kicker">Monthly guardrails</div><h2>Budget limits</h2></div>
+                <button class="button button-secondary" id="add-budget-row" type="button">+ Add category</button>
+              </div>
+              <p class="muted">Use one limit per category. Saving replaces the budget for the selected month.</p>
+              <form id="budget-form">
+                <div class="budget-rows" id="budget-rows"></div>
+                <div class="form-actions">
+                  <button class="button button-primary" type="submit">Save monthly budget</button>
+                  <p class="form-status" id="budget-form-status" role="status"></p>
+                </div>
+              </form>
+            </article>
+            <article class="panel budget-guide">
+              <div class="panel-kicker">How to read the signal</div>
+              <h2>Three levels, one glance</h2>
+              <ul class="signal-list">
+                <li><span class="signal ok"></span><div><strong>On track</strong><p>Less than 80% of the limit has been used.</p></div></li>
+                <li><span class="signal warning"></span><div><strong>Watch closely</strong><p>Between 80% and 100% is already used.</p></div></li>
+                <li><span class="signal over"></span><div><strong>Over limit</strong><p>Spending is higher than the category limit.</p></div></li>
+              </ul>
+              <p class="local-note"><strong>Local bonus:</strong> the unfinished budget form is preserved in this browser until it is saved or cleared.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="view-reports" data-view-panel="reports" aria-labelledby="view-title" hidden>
+          <div class="report-grid">
+            <article class="panel report-summary">
+              <div class="panel-kicker">Monthly close</div>
+              <h2 id="report-period-title">Period summary</h2>
+              <dl class="report-facts">
+                <div><dt>Income</dt><dd id="report-income">—</dd></div>
+                <div><dt>Expense</dt><dd id="report-expense">—</dd></div>
+                <div><dt>Net change</dt><dd id="report-balance">—</dd></div>
+                <div><dt>Entries</dt><dd id="report-count">—</dd></div>
+              </dl>
+            </article>
+            <article class="panel report-categories">
+              <div class="panel-heading"><div><div class="panel-kicker">Ranked categories</div><h2>Expense distribution</h2></div></div>
+              <div id="report-category-bars" class="category-bars large"></div>
+            </article>
+            <article class="panel report-budget">
+              <div class="panel-heading"><div><div class="panel-kicker">Limits vs actuals</div><h2>Budget performance</h2></div></div>
+              <div class="budget-performance" id="budget-performance"></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="settings-dialog" class="settings-dialog">
+      <form method="dialog" id="settings-form">
+        <div class="panel-heading"><div><div class="panel-kicker">Connection</div><h2>API settings</h2></div><button class="icon-button" value="cancel" aria-label="Close settings">×</button></div>
+        <label class="field"><span>API base URL</span><input name="apiBase" type="url" required /></label>
+        <label class="field"><span>Currency</span><select name="currency"><option value="CNY">CNY — Chinese yuan</option><option value="USD">USD — US dollar</option><option value="EUR">EUR — Euro</option><option value="GBP">GBP — Pound sterling</option></select></label>
+        <label class="field"><span>Appearance</span><select name="theme"><option value="auto">Follow system</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+        <div class="form-actions"><button class="button button-primary" value="save">Save settings</button></div>
+      </form>
+    </dialog>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <script type="module" src="assets/js/app.mjs"></script>
+  </body>
+</html>
+
